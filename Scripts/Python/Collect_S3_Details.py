@@ -53,7 +53,7 @@ class CommonS3:
             df.loc[df['BUCKET_NAME'] == bucket_name, "POLICIES"] = result['Policy']
         except botocore.exceptions.ClientError as e:
             # print(e.response)
-            df.loc[df['BUCKET_NAME'] == bucket_name, "BUCKET_REGION"] = e.response['Error']['Message']
+            df.loc[df['BUCKET_NAME'] == bucket_name, "POLICIES"] = e.response['Error']['Message']
         except Exception as e:
             print("Oops!", e.__class__, "occurred in the insert_bucket_policy()")
 
