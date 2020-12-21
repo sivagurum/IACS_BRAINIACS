@@ -27,9 +27,6 @@ class MetricParser:
 
     def logicBuilder(self,cpu_util_df,instance_id):
         try:            
-            # Calculating Average Value 
-            #cpu_util_df.loc[cpu_util_df['INSTANCE_ID']  == instance_id, 'one_hour_utils' ]  = ( cpu_util_df['P1'] + cpu_util_df['P2'] + cpu_util_df['P3'] + cpu_util_df['P4'] + cpu_util_df['P5'] + cpu_util_df['P6'] + cpu_util_df['P7'] + cpu_util_df['P8'] + cpu_util_df['P9'] + cpu_util_df['P10'] + cpu_util_df['P11'] ) / 11
-            #cpu_util_df.loc[cpu_util_df['INSTANCE_ID']  == instance_id, 'one_hour_utils' ]  = ( cpu_util_df['P1'] + cpu_util_df['P2'] + cpu_util_df['P3'] + cpu_util_df['P4']  ) / 11
             # Get tPe Cpu Status Based on the onehour_utils Value 
             cpu_util_df.loc[cpu_util_df['INSTANCE_ID']  == instance_id, 'CPU_UTIL_STATUS' ] =  cpu_util_df['P1'].apply(lambda x: 'OVER_UTILIZED' if x > 80 else 'AVAILABLE')
         except botocore.exceptions.ClientError as e:
