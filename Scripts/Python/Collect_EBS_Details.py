@@ -3,7 +3,7 @@ import botocore
 from datetime import datetime, timedelta
 import pandas as pd
 from tabulate import tabulate
-
+import sys
 
 class MetricParser:
     def __init__(self, df):
@@ -25,11 +25,11 @@ class MetricParser:
         return response
 
     @classmethod
-    def logic_builder(self, cpu_util_df, volume_id):
+    def logic_builder(self, cpu_util_df, volume_id, metricVar):
         try:
             # Get tPe Volume Status Based on the onehour_utils Value
-            cpu_util_df.loc[cpu_util_df['VolumeId'] == volume_id, 'VOLUME_STATUS'] = cpu_util_df['V1'].apply(
-                lambda x: 'OVER_UTILIZED' if x > 100 else 'NORMAL')
+            cpu_util_df.loc[cpu_util_df['VolumeId'] == volume_id, 'VOLUME_STATUS'] = cpu_util_df[str(metricVar+'1')].apply(
+                lambda x: 'OVER_UTILIZED' if x > 150 else 'NORMAL')
         except botocore.exceptions.ClientError as e:
             cpu_util_df.loc[cpu_util_df['VolumeId'] == volume_id, "VOLUME_STATUS"] = e.response['Error'][
                 'Message']
@@ -37,17 +37,17 @@ class MetricParser:
             print("Oops!", e.__class__, "occurred in the getInstanceDetails()")
 
     @classmethod
-    def volume_utilization(self, cpu_util_df, response, volume_id):
+    def volume_utilization(self, cpu_util_df, response, volume_id, metricVar):
         metricvalue = {}
         for i in response['Datapoints']:
             metricvalue[i['Timestamp']] = i['Maximum']
 
-        print(f"Length of DataPoints in the Metric {len(metricvalue.keys())}")
+        #print(f"Length of DataPoints in the Metric {len(metricvalue.keys())}")
         # for key in sorted(metricvalue.keys()):
         #     print("%s: %s" % (key, metricvalue[key]))
         hour = 1
         for key in sorted(metricvalue.keys()):
-            cpu_util_df.loc[cpu_util_df['VolumeId'] == volume_id, 'V' + str(hour)] = metricvalue[key]
+            cpu_util_df.loc[cpu_util_df['VolumeId'] == volume_id, str(metricVar+str(hour))] = metricvalue[key]
             hour = hour + 1
 
 
@@ -62,7 +62,8 @@ if __name__ == "__main__":
         #metricVar = 'VolumeIdleTime'
         #metricVar= 'VolumeQueueLength'
         metricVar = 'VolumeWriteOps'
-        columns = ['VolumeId', 'VOLUME_STATUS', 'V1']
+        columns = ['VolumeId', 'VOLUME_STATUS', metricVar+'1']
+
         cpu_util_df = pd.DataFrame(columns=columns)
 
         cw_collector = MetricParser(cpu_util_df)
@@ -76,10 +77,10 @@ if __name__ == "__main__":
                 end_time = datetime.utcnow()
                 response = cw_collector.build_query(volume_id, start_time, end_time, metricVar)
                 #print(response)
-                cw_collector.volume_utilization(cpu_util_df, response, volume_id)
+                cw_collector.volume_utilization(cpu_util_df, response, volume_id, metricVar)
 
                 # Calculating the Status
-                cw_collector.logic_builder(cpu_util_df, volume_id)
+                cw_collector.logic_builder(cpu_util_df, volume_id, metricVar)
 
         print(tabulate(cpu_util_df, headers='keys', tablefmt='psql'))
 
