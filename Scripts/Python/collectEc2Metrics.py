@@ -31,7 +31,7 @@ class CollectMetrics:
             )
             for record in response['IamInstanceProfileAssociations']:
                 iam_details.append(record['IamInstanceProfile']['Arn'])
-            df.loc[df['INSTANCE_ID']  == instance_id, 'INSTANCE_IAM' ] = iam_details
+            df.loc[df['INSTANCE_ID']  == instance_id, 'INSTANCE_IAM' ] = iam_details if iam_details else 'NA'
         except botocore.exceptions.ClientError as e:
             df.loc[df['INSTANCE_ID'] == instance.id, "INSTANCE_IAM"] = e.response['Error']['Message']
         except Exception as e:
