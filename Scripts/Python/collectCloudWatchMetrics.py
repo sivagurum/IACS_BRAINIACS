@@ -1,10 +1,7 @@
 import boto3
 import botocore
 from  datetime import datetime, timedelta
-from collections import  OrderedDict
-import json
 import pandas as pd
-import numpy as np
 from io import StringIO
 from tabulate import tabulate
 
