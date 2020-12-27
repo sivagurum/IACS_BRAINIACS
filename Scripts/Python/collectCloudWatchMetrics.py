@@ -114,7 +114,7 @@ if __name__ == "__main__":
             # Setting the DataPoints Period 0f 15 Minutes 15*60 = 900 
             period = 900
             response = cw_collector.buildQuery( instance_id, period,start_time, end_time,'CPUUtilization')
-            print(response)
+            #print(response)
             #
             # Collecting Response from the Cloud Watch 
             network_in_response = cw_collector.buildQuery( instance_id, period,start_time, end_time,'NetworkIn', )
@@ -122,7 +122,7 @@ if __name__ == "__main__":
             diskRead_response = cw_collector.buildQuery( instance_id, period,start_time, end_time,'DiskReadBytes')
             diskWrite_response = cw_collector.buildQuery( instance_id, period,start_time, end_time,'DiskWriteBytes')
             status_response = cw_collector.buildQuery( instance_id, period,start_time, end_time,'StatusCheckFailed')
-            print(status_response)
+            #print(status_response)
             # Parsing The Response and Add it To DataFrame 
             cw_collector.cpuUtilization(cpu_util_df,response,instance_id)
             cw_collector.Metricutilization(cpu_util_df,network_in_response,instance_id,'NETIN')
