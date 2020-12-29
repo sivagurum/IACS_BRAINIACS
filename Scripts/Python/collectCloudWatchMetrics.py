@@ -180,7 +180,7 @@ if __name__ == "__main__":
         cw_collector = MetricParser(cpu_util_df)
         collector = MetricParser(cpu_util_df)
         # Defining the Regions 
-        regions = ['us-east-1', 'us-west-1']
+        regions = ['us-east-1', 'us-west-2']
         for region in regions:
             print(f"For Region {region}")
             my_session = boto3.session.Session(region_name=region)
