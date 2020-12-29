@@ -236,10 +236,10 @@ if __name__ == "__main__":
         # East Data Frame 
         my_east_df = cpu_util_df[cpu_util_df['REGION']  == 'us-east-1']
         # West Data Frame 
-        my_west_df = cpu_util_df[cpu_util_df['REGION']  == 'us-west-1']
+        my_west_df = cpu_util_df[cpu_util_df['REGION']  == 'us-west-2']
         
         # Joining Two DataFrames
-        result_df  = pd.merge(my_east_df,my_west_df,on='INSTANCE_NAME', how='outer')
+        result_df  = pd.merge(my_east_df,my_west_df,on='INSTANCE_NAME', how='outer', sort=True)
         
         # Adding Conditions for Reporting 
         result_df['InstanceTypeFlag'] = np.where((result_df['INSTANCE_TYPE_x']==result_df['INSTANCE_TYPE_y']),'Matched','Not Matched')
