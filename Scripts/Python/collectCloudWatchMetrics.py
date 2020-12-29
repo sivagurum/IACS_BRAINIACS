@@ -251,6 +251,10 @@ if __name__ == "__main__":
         conditions_color=(result_df.iloc[:,41:43].eq('Matched').all(1),result_df.iloc[:,41:43].eq('Not Matched').all(1))
         result_df['ColorFlag']=np.select(conditions_color,choice_color_list,default='O')
 
+        # Updating the COlumn Names        
+        result_df.rename(columns = lambda x: x.replace('_x', '_EAST'), inplace=True)
+        result_df.rename(columns = lambda x: x.replace('_y', '_WEST'), inplace=True)
+        #result_df.columns(new_column)
         print(tabulate(result_df, headers='keys', tablefmt='psql'))
         #print(tabulate(my_west_df, headers='keys', tablefmt='psql'))
 
